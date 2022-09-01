@@ -2,20 +2,15 @@ const electionSchema = require("../database/schemas/electionSchema");
 const candidateSchema = require("../database/schemas/candidateSchema");
 const voterSchema = require("../database/schemas/voterSchema");
 const adminSchema = require("../database/schemas/adminSchema");
+const imagesSchema = require("../database/schemas/imagesSchema");
+
 const getToken = require("../authentication/JWTOperations");
 
 // create new election
 const createNewElection = (req, res) => {
-  const {
-    name,
-    nomStart,
-    nomEnd,
-    voteStart,
-    voteEnd,
-    state,
-    birthDate,
-  } = req.body;
-
+  const { name, nomStart, nomEnd, voteStart, voteEnd, state, birthDate } =
+    req.body;
+  console.log(req.file);
   const newElection = new electionSchema({
     electionName: name,
     nominationStart: nomStart,
@@ -24,6 +19,7 @@ const createNewElection = (req, res) => {
     votingEnd: voteEnd,
     "craiteria.state": state,
     "craiteria.birthDate": birthDate,
+    image: req.file.destination + "/" + req.file.originalname,
   });
 
   // saving new candidate
@@ -133,7 +129,7 @@ const signupAdmin = (req, res) => {
         return res.status(200).json({ info: "admin added" });
       }
     });
-  } catch (error) { }
+  } catch (error) {}
 };
 
 // admin login
@@ -152,6 +148,33 @@ const loginAdmin = (req, res) => {
   );
 };
 
+const addImages = (req, res) => {
+  const { imageName, imageDec } = req.body;
+  const newImage = new imagesSchema({
+    imageName: imageName,
+    imageDec: imageDec,
+    imageUrl: req.file.destination + "/" + req.file.originalname,
+  });
+  newImage.save((err) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send("image uploaded");
+    }
+  });
+};
+
+const getImages = (req, res) => {
+  const imageName = req.params.imageName;
+  imagesSchema.find({ imageName: imageName }, (err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send(data);
+    }
+  });
+};
+
 module.exports = {
   createNewElection,
   nominateCandidate,
@@ -159,4 +182,6 @@ module.exports = {
   registerVoter,
   signupAdmin,
   loginAdmin,
+  addImages,
+  getImages,
 };

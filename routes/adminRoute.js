@@ -8,6 +8,8 @@ const {
   registerVoter,
   signupAdmin,
   loginAdmin,
+  addImages,
+  getImages,
 } = require("../services/adminService");
 
 const {
@@ -15,12 +17,13 @@ const {
   getAllCandidateOfElection,
   getOnGoingElection,
 } = require("../services/electionService");
+const imageHandle = require("../extras/media");
 
-router.post("/new-election", adminAuth, (req, res) => {
+router.post("/new-election", imageHandle.single("eleImage"), (req, res) => {
   createNewElection(req, res);
 });
 
-router.get("/all-election", adminAuth, (req, res) => {
+router.get("/all-election", (req, res) => {
   getAllElection(req, res);
 });
 
@@ -50,6 +53,14 @@ router.post("/admin-signup", (req, res) => {
 
 router.post("/admin-login", (req, res) => {
   loginAdmin(req, res);
+});
+
+router.post("/add-images", imageHandle.single("ad-image"), (req, res) => {
+  addImages(req, res);
+});
+
+router.get("/get-images/:imageName", (req, res) => {
+  getImages(req, res);
 });
 
 module.exports = router;
