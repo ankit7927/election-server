@@ -13,7 +13,7 @@ router.post("/voter-signup", (req, res) => {
   voterSignUp(req, res);
 });
 
-router.put("/voter-update/:voterid", voterAuth, (req, res) => {
+router.put("/voter-update/:voterid", (req, res) => {
   updateVoter(req, res);
 });
 
@@ -21,7 +21,7 @@ router.post("/voter-login", (req, res) => {
   voterLogin(req, res);
 });
 
-router.get("/voter-profile/:voterID", voterAuth, (req, res) => {
+router.get("/voter-profile/:voterID", (req, res) => {
   voterProfile(req, res);
 });
 

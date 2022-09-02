@@ -17,12 +17,15 @@ const getOnGoingElection = (req, res) => {
       return res.status(500).send(err);
     } else {
       temparray = [];
+      const currentDate = new Date();
       data.forEach((element) => {
         if (
-          new Date(element.nominationStart) <= new Date() &&
-          new Date() <= new Date(element.votingEnd)
-        )
+          new Date(element.votingStart) < currentDate &&
+          currentDate < new Date(element.votingEnd)
+        ) {
           temparray.push(element);
+        }
+
       });
       return res.send(temparray);
     }

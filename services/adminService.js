@@ -8,21 +8,16 @@ const getToken = require("../authentication/JWTOperations");
 
 // create new election
 const createNewElection = (req, res) => {
-  const { name, nomStart, nomEnd, voteStart, voteEnd, state, birthDate } =
-    req.body;
+  const { electionName, electionDec, voteStart, voteEnd, state } = req.body;
   console.log(req.file);
   const newElection = new electionSchema({
-    electionName: name,
-    nominationStart: nomStart,
-    nominationEnd: nomEnd,
+    electionName: electionName,
+    electionDec: electionDec,
     votingStart: voteStart,
     votingEnd: voteEnd,
     "craiteria.state": state,
-    "craiteria.birthDate": birthDate,
     image: req.file.destination + "/" + req.file.originalname,
   });
-
-  // saving new candidate
   newElection.save((err) => {
     if (err) {
       return res.status(400).send(err);
@@ -31,6 +26,19 @@ const createNewElection = (req, res) => {
     }
   });
 };
+
+// delete election
+const deteletElection = (req, res) => {
+  const eleID = req.params.eleID
+  electionSchema.findOneAndDelete({ _id: eleID }, (err) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send("election deleted");
+    }
+  })
+}
+
 
 // create new candidate
 const nominateCandidate = (req, res) => {
@@ -48,26 +56,11 @@ const nominateCandidate = (req, res) => {
     if (err) {
       return res.status(400).send(err);
     } else {
-      electionSchema.findByIdAndUpdate(
-        { _id: electionID },
-        {
-          $push: {
-            nominatedCandidates: {
-              candidatesID: newCandidate._id,
-            },
-          },
-        },
-        (err, data) => {
-          if (err) {
-            return res.status(400).send(err);
-          } else {
-            return res.status(200).send("candidate added");
-          }
-        }
-      );
+      return res.status(200).send("candidate added");
     }
   });
 };
+
 
 // get all voters
 const getAllVoters = (req, res) => {
@@ -81,36 +74,36 @@ const getAllVoters = (req, res) => {
 };
 
 // register voter
+/*
+TODO when voter had gived his vote, 
+then remove his id from election 
+*/
 const registerVoter = async (req, res) => {
   try {
-    elecCratia = await electionSchema.findById(
+    const elecCratia = await electionSchema.findById(
       { _id: req.params.eleID },
-      { craiteria: 1, _id: 0 }
+      { craiteria: 1 }
     );
+    const voters = await voterSchema.find({ state: elecCratia.craiteria.state }, { _id: 1 })
+    tempArray = []
+    voters.map((voter) => tempArray.push(voter._id))
 
-    voterSchema.updateMany(
-      { state: elecCratia.craiteria.state },
-      {
-        $push: {
-          voteValue: {
-            eletionID: req.params.eleID,
-          },
-        },
-      },
-      (err) => {
-        if (err) {
-          return res.status(400).send(err);
-        } else {
-          return res.status(200).send("voters registred");
-        }
+    electionSchema.findByIdAndUpdate({ _id: req.params.eleID }, {
+      "$set": {
+        registredVoters: tempArray
       }
-    );
+    }, (err, data) => {
+      if (err) {
+        return res.status(400).send(err);
+      } else {
+        return res.status(200).send(data);
+      }
+    })
   } catch (error) {
-    return res.status(400).send(error);
+    return res.status(500).send(error);
   }
 };
 
-// unregister voters
 
 // signup admin
 const signupAdmin = (req, res) => {
@@ -129,7 +122,7 @@ const signupAdmin = (req, res) => {
         return res.status(200).json({ info: "admin added" });
       }
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // admin login
@@ -177,6 +170,7 @@ const getImages = (req, res) => {
 
 module.exports = {
   createNewElection,
+  deteletElection,
   nominateCandidate,
   getAllVoters,
   registerVoter,

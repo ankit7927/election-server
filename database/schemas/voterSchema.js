@@ -13,7 +13,7 @@ const voterSchema = new mongoose.Schema({
         type: String,
         requred: true
     },
-
+    profileImage: String,
     // id details
     birthDate: Date,
     address: String,
@@ -21,14 +21,6 @@ const voterSchema = new mongoose.Schema({
     adharNo: Number,
     panNo: String,
     voterCard: String,
-    voteValue: [
-        {
-            eletionID: {
-                type: String,
-                default: null
-            }
-        }
-    ]
 })
 
 module.exports = mongoose.model("voterSchema", voterSchema);

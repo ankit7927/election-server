@@ -5,16 +5,15 @@ const electionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  electionDec: String,
   // important dates
-  nominationStart: Date,
-  nominationEnd: Date,
   votingStart: Date,
   votingEnd: Date,
+  // tumbnail image
   image: String,
   //craiteria of voting
   craiteria: {
     state: String,
-    birthDate: Date,
   },
   nominatedCandidates: [
     {
@@ -24,12 +23,9 @@ const electionSchema = new mongoose.Schema({
     },
   ],
   registredVoters: [
-    {
-      voterID: String,
-      _id: false,
-    },
+    String
   ],
-  _v: false,
+  __v: false,
 });
 
 module.exports = mongoose.model("electionSchema", electionSchema);

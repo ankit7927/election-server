@@ -12,7 +12,7 @@ const voterSignUp = (req, res) => {
     username: username,
     password: password,
   });
-
+  console.log("reached")
   newVoter.save((err, data) => {
     if (err) {
       return res.status(400).send(err);
