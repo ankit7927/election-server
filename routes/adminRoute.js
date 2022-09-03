@@ -7,6 +7,7 @@ const {
   createCandidate,
   getAllCandidate,
   registerCandidate,
+  genisesBlock,
   getAllVoters,
   registerVoter,
   signupAdmin,
@@ -20,6 +21,11 @@ const {
   getAllCandidateOfElection,
   getOnGoingElection,
 } = require("../services/electionService");
+
+const {
+  getAllBlocks
+} = require("../services/voterService");
+
 const imageHandle = require("../extras/media");
 
 // election
@@ -55,6 +61,15 @@ router.get("/all-cand", (req, res) => {
 router.post("/reg-cand", (req, res) => {
   registerCandidate(req, res)
 })
+
+// block
+router.get("/gen-genblock/:eleID", (req, res) => {
+  genisesBlock(req, res)
+})
+
+router.get("/get-blocks", (req, res) => {
+  getAllBlocks(req, res);
+});
 
 // voters
 router.get("/all-voter", (req, res) => {

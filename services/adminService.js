@@ -1,6 +1,7 @@
 const electionSchema = require("../database/schemas/electionSchema");
 const candidateSchema = require("../database/schemas/candidateSchema");
 const voterSchema = require("../database/schemas/voterSchema");
+const voteBlockSchema = require("../database/schemas/voteBlockSchema");
 const adminSchema = require("../database/schemas/adminSchema");
 const imagesSchema = require("../database/schemas/imagesSchema");
 
@@ -90,7 +91,39 @@ const registerCandidate = (req, res) => {
 
 }
 
+// genises block 
+const genisesBlock = async (req, res) => {
+  const eleID = req.params.eleID
+  election = {}
+  try {
+    election = await electionSchema.findById(
+      { _id: eleID },
+      { nominatedCandidates: 1 }
+    )
+  } catch (error) {
+    return res.status(400).send("wrong election ID\n" + error);
+  }
 
+  const temp = await voteBlockSchema.find().count()
+  if (temp < 1) {
+    const newBlock = new voteBlockSchema({
+      blockHash: "this genises block",
+      previousHash: "this genises block",
+      timeStamp: new Date(),
+      electionID: eleID,
+      votes: election.nominatedCandidates
+    })
+    newBlock.save((err, data) => {
+      if (err) {
+        return res.status(400).send(err);
+      } else {
+        return res.status(200).send(data);
+      }
+    })
+  } else {
+    return res.status(400).send("genises block is alrady created -");
+  }
+}
 
 // get all voters
 const getAllVoters = (req, res) => {
@@ -206,6 +239,7 @@ module.exports = {
   createCandidate,
   registerCandidate,
   getAllCandidate,
+  genisesBlock,
   getAllVoters,
   registerVoter,
   signupAdmin,

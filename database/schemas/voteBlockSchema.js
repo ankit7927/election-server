@@ -2,17 +2,18 @@ const mongoose = require("mongoose");
 //const voteModel = require("./voteModel")
 
 const voteBlockSchema = new mongoose.Schema({
-    blockHash:String,
-    previousHash:String,
-    timeStamp:Date,
-    voterID:String,
-    votes:[
+    blockHash: String,
+    previousHash: String,
+    timeStamp: Date,
+    voterID: String,
+    electionID: String,
+    votes: [
         {
-            candidateID:String,
-            voteCount:Number,
-            _id:false
+            candidateID: String,
+            voteCount: Number,
+            _id: false
         }
     ],
 })
 
-module.exports = mongoose.model("voteBlockSchema", voteBlockSchema);
+module.exports = mongoose.model("voteBlockDB", voteBlockSchema);
