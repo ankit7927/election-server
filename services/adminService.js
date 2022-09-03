@@ -41,14 +41,13 @@ const deteletElection = (req, res) => {
 
 
 // create new candidate
-const nominateCandidate = (req, res) => {
-  const { name, contact, email, electionID } = req.body;
+const createCandidate = (req, res) => {
+  const { name, contact, email } = req.body;
 
   const newCandidate = new candidateSchema({
     candName: name,
     candContact: contact,
     candemail: email,
-    nominatingElectionID: electionID,
   });
 
   // saving new candidate
@@ -60,6 +59,37 @@ const nominateCandidate = (req, res) => {
     }
   });
 };
+
+// get all candidate
+const getAllCandidate = (req, res) => {
+  candidateSchema.find({}, (err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send(data);
+    }
+  })
+}
+
+// add candidates to election
+const registerCandidate = (req, res) => {
+  const { candID, eleID } = req.body
+  electionSchema.findOneAndUpdate({ _id: eleID }, {
+    "$push": {
+      nominatedCandidates: {
+        candidateID: candID
+      }
+    }
+  }, (err) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send("candidate registred");
+    }
+  })
+
+}
+
 
 
 // get all voters
@@ -96,7 +126,7 @@ const registerVoter = async (req, res) => {
       if (err) {
         return res.status(400).send(err);
       } else {
-        return res.status(200).send(data);
+        return res.status(200).send("voters redistered");
       }
     })
   } catch (error) {
@@ -141,6 +171,7 @@ const loginAdmin = (req, res) => {
   );
 };
 
+// add image
 const addImages = (req, res) => {
   const { imageName, imageDec } = req.body;
   const newImage = new imagesSchema({
@@ -157,6 +188,7 @@ const addImages = (req, res) => {
   });
 };
 
+// get image
 const getImages = (req, res) => {
   const imageName = req.params.imageName;
   imagesSchema.find({ imageName: imageName }, (err, data) => {
@@ -171,7 +203,9 @@ const getImages = (req, res) => {
 module.exports = {
   createNewElection,
   deteletElection,
-  nominateCandidate,
+  createCandidate,
+  registerCandidate,
+  getAllCandidate,
   getAllVoters,
   registerVoter,
   signupAdmin,

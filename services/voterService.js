@@ -64,7 +64,7 @@ const updateVoter = (req, res) => {
         voterID: voterID,
       },
     },
-    (err, data) => {
+    (err) => {
       if (err) {
         return res.status(400).send(err);
       } else {
@@ -74,7 +74,7 @@ const updateVoter = (req, res) => {
   );
 };
 
-// request eligibility of voting in election
+// voter profile
 const voterProfile = (req, res) => {
   voterSchema.findById({ _id: req.params.voterID }, (err, data) => {
     if (err) {

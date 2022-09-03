@@ -17,8 +17,11 @@ const electionSchema = new mongoose.Schema({
   },
   nominatedCandidates: [
     {
-      candidatesID: String,
-      voteCount: Number,
+      candidateID: String,
+      voteCount: {
+        type: Number,
+        default: 0
+      },
       _id: false,
     },
   ],

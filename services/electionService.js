@@ -1,5 +1,4 @@
 const electionSchema = require("../database/schemas/electionSchema");
-const candidateSchema = require("../database/schemas/candidateSchema");
 
 const getAllElection = (req, res) => {
   electionSchema.find({}, (err, data) => {
@@ -43,8 +42,9 @@ const getElectionByID = (req, res) => {
 };
 
 const getAllCandidateOfElection = (req, res) => {
-  candidateSchema.find(
-    { nominatingElectionID: req.params.electionID },
+  electionSchema.findById(
+    { _id: req.params.electionID },
+    { registredVoters: 1 },
     (err, data) => {
       if (err) {
         return res.status(500).send(err);
