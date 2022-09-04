@@ -104,7 +104,11 @@ const genisesBlock = async (req, res) => {
     return res.status(400).send("wrong election ID\n" + error);
   }
 
-  const temp = await voteBlockSchema.find().count()
+  if (election.nominatedCandidates === []) {
+    return res.status(400).send("no candidates are nominated please\nnominante candidates");
+  }
+
+  const temp = await voteBlockSchema.find({ electionID: eleID }).count()
   if (temp < 1) {
     const newBlock = new voteBlockSchema({
       blockHash: "this genises block",
@@ -137,10 +141,6 @@ const getAllVoters = (req, res) => {
 };
 
 // register voter
-/*
-TODO when voter had gived his vote, 
-then remove his id from election 
-*/
 const registerVoter = async (req, res) => {
   try {
     const elecCratia = await electionSchema.findById(
@@ -167,6 +167,33 @@ const registerVoter = async (req, res) => {
   }
 };
 
+// unregister voter
+const removeVoter = (voterID, eleID, candState, res) => {
+  electionSchema.findById({ _id: eleID }, { registredVoters: 1 }, (err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      for (var i = 0; i <= data.registredVoters.length; i++) {
+        if (data.registredVoters[i] == voterID) {
+          data.registredVoters.splice(i, 1)
+        }
+      }
+
+      electionSchema.findByIdAndUpdate({ _id: eleID }, {
+        "$set": {
+          registredVoters: data.registredVoters,
+          nominatedCandidates: candState
+        }
+      }, (err) => {
+        if (err) {
+          return res.status(400).send(err);
+        } else {
+          return res.status(200).send("votted success");
+        }
+      })
+    }
+  })
+}
 
 // signup admin
 const signupAdmin = (req, res) => {
@@ -238,6 +265,7 @@ module.exports = {
   deteletElection,
   createCandidate,
   registerCandidate,
+  removeVoter,
   getAllCandidate,
   genisesBlock,
   getAllVoters,

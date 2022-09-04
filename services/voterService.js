@@ -2,6 +2,8 @@ const voterSchema = require("../database/schemas/voterSchema");
 const voteBlockSchema = require("../database/schemas/voteBlockSchema");
 const getToken = require("../authentication/JWTOperations");
 const electionSchema = require("../database/schemas/electionSchema");
+const { removeVoter } = require("./adminService")
+
 
 // voters signup
 const voterSignUp = (req, res) => {
@@ -14,7 +16,6 @@ const voterSignUp = (req, res) => {
     username: username,
     password: password,
   });
-  console.log("reached")
   newVoter.save((err, data) => {
     if (err) {
       return res.status(400).send(err);
@@ -108,19 +109,34 @@ const vote = async (req, res) => {
    * get all candidates id from electionSchema
    * which will be an array 
    */
-  const { selectedCad, eleID } = req.body;
-  const lastblock = await voteBlockSchema.find().limit(1).sort({ "$natural": -1 })
 
+  const { selectedCand, eleID, voterID } = req.body;
+  const lastblock = await voteBlockSchema.find({ electionID: eleID }).limit(1).sort({ "$natural": -1 })
+  console.log(lastblock)
+
+  lastblock[0].votes.map((vote) => {
+    if (vote.candidateID == selectedCand) {
+      vote.voteCount = vote.voteCount + 1
+    }
+  })
   const newBlock = new voteBlockSchema({
-    blockHash: "this is some hash ",
-    previousHash: "hash of previous hash",
+    blockHash: "this is first block hash ",
+    previousHash: "hash genises block",
     timeStamp: "2020-02-02",
     electionID: eleID,
-    votes: lastblock.votes
+    votes: lastblock[0].votes
   })
 
-  res.send(newBlock)
-
+  newBlock.save((err, data) => {
+    if (err) {
+      return res.status(500).send(err);
+    } else {
+      // here are removing voter id from 
+      // this election database
+      // and updating nominated candidate
+      removeVoter(voterID, eleID, lastblock[0].votes, res)
+    }
+  })
 }
 
 
@@ -157,14 +173,24 @@ const voteMiddleWare = async (req, res, next) => {
   if (candx && voterx) {
     next()
   } else {
-    return res.send("note done");
+    return res.status(400).json({ "error": "voter or candidate not found" });
   }
-
 }
 
-
+// get all vote blocks
 const getAllBlocks = (req, res) => {
   voteBlockSchema.find({}, (err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send(data);
+    }
+  })
+}
+
+// get election block
+const getBlockOfElection = (req, res) => {
+  voteBlockSchema.find({ electionID: req.params.eleID }, (err, data) => {
     if (err) {
       return res.status(400).send(err);
     } else {
@@ -184,4 +210,5 @@ module.exports = {
   vote,
   voteMiddleWare,
   getAllBlocks,
+  getBlockOfElection
 };

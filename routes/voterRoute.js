@@ -10,6 +10,7 @@ const {
   vote,
   voteMiddleWare,
   getAllBlocks,
+  getBlockOfElection,
 } = require("../services/voterService");
 
 router.post("/voter-signup", (req, res) => {
@@ -34,6 +35,10 @@ router.post("/vote", voteMiddleWare, (req, res) => {
 
 router.get("/get-blocks", (req, res) => {
   getAllBlocks(req, res);
+});
+
+router.get("/get-blocks/:eleID", (req, res) => {
+  getBlockOfElection(req, res);
 });
 
 module.exports = router;
