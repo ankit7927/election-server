@@ -43,11 +43,9 @@ const updateVoter = (req, res) => {
   const {
     contact,
     email,
-    password,
     address,
     adharNo,
     panNo,
-    voterID,
     state,
     birthDate,
   } = req.body;
@@ -60,11 +58,9 @@ const updateVoter = (req, res) => {
         birthDate: birthDate,
         contact: contact,
         email: email,
-        password: password,
         address: address,
         adharNo: adharNo,
         panNo: panNo,
-        voterID: voterID,
       },
     },
     (err) => {
@@ -87,6 +83,22 @@ const voterProfile = (req, res) => {
     }
   });
 };
+
+// voter id confirmation
+const voterConfirmation = (req, res) => {
+  const { voterID, password } = req.body;
+
+  /// we will obtain opt --
+
+  voterSchema.exists({ _id: voterID, password: password }, (err, data) => {
+    if (data != null) {
+      return res.status(200).json({ "info": "voter confirmed" })
+    } else {
+      return res.status(400).json({ "error": "voter not confirmed" + err });
+    }
+  });
+
+}
 
 /**
  * ------blockchain simulation-----
@@ -205,6 +217,7 @@ const getBlockOfElection = (req, res) => {
 module.exports = {
   updateVoter,
   voterLogin,
+  voterConfirmation,
   voterSignUp,
   voterProfile,
   vote,

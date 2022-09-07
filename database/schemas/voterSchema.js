@@ -20,7 +20,6 @@ const voterSchema = new mongoose.Schema({
     state: String,
     adharNo: Number,
     panNo: String,
-    voterCard: String,
 })
 
 module.exports = mongoose.model("voterSchema", voterSchema);

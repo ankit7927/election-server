@@ -14,7 +14,7 @@ router.get("/current-ele", (req, res) => {
   getOnGoingElection(req, res);
 });
 
-router.get("get-election/:id", (req, res) => {
+router.get("/get-election/:id", (req, res) => {
   getElectionByID(req, res);
 });
 

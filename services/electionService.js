@@ -44,7 +44,7 @@ const getElectionByID = (req, res) => {
 const getAllCandidateOfElection = (req, res) => {
   electionSchema.findById(
     { _id: req.params.electionID },
-    { registredVoters: 1 },
+    { nominatedCandidates: 1 },
     (err, data) => {
       if (err) {
         return res.status(500).send(err);

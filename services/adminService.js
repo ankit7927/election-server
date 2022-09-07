@@ -43,12 +43,13 @@ const deteletElection = (req, res) => {
 
 // create new candidate
 const createCandidate = (req, res) => {
-  const { name, contact, email } = req.body;
+  const { name, contact, email, party } = req.body;
 
   const newCandidate = new candidateSchema({
     candName: name,
     candContact: contact,
     candemail: email,
+    candParty: party
   });
 
   // saving new candidate
@@ -75,6 +76,8 @@ const getAllCandidate = (req, res) => {
 // add candidates to election
 const registerCandidate = (req, res) => {
   const { candID, eleID } = req.body
+  console.log(eleID)
+  console.log(candID)
   electionSchema.findOneAndUpdate({ _id: eleID }, {
     "$push": {
       nominatedCandidates: {

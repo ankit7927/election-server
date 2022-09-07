@@ -6,6 +6,7 @@ const {
   voterSignUp,
   updateVoter,
   voterLogin,
+  voterConfirmation,
   voterProfile,
   vote,
   voteMiddleWare,
@@ -23,6 +24,10 @@ router.put("/voter-update/:voterid", (req, res) => {
 
 router.post("/voter-login", (req, res) => {
   voterLogin(req, res);
+});
+
+router.post("/voter-conf", (req, res) => {
+  voterConfirmation(req, res);
 });
 
 router.get("/voter-profile/:voterID", (req, res) => {
