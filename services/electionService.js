@@ -1,4 +1,6 @@
 const electionSchema = require("../database/schemas/electionSchema");
+const voteBlockSchema = require("../database/schemas/voteBlockSchema");
+
 
 const getAllElection = (req, res) => {
   electionSchema.find({}, (err, data) => {
@@ -55,9 +57,36 @@ const getAllCandidateOfElection = (req, res) => {
   );
 };
 
+
+// get all vote blocks
+const getAllBlocks = (req, res) => {
+  voteBlockSchema.find({}, (err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send(data);
+    }
+  })
+}
+
+// get election block
+const getBlockOfElection = (req, res) => {
+  voteBlockSchema.find({ electionID: req.params.eleID }, (err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).send(data);
+    }
+  })
+}
+
+
+
 module.exports = {
   getAllElection,
   getAllCandidateOfElection,
   getOnGoingElection,
   getElectionByID,
+  getBlockOfElection,
+  getAllBlocks,
 };

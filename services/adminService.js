@@ -76,22 +76,28 @@ const getAllCandidate = (req, res) => {
 // add candidates to election
 const registerCandidate = (req, res) => {
   const { candID, eleID } = req.body
-  console.log(eleID)
-  console.log(candID)
-  electionSchema.findOneAndUpdate({ _id: eleID }, {
-    "$push": {
-      nominatedCandidates: {
-        candidateID: candID
-      }
-    }
-  }, (err) => {
+
+  candidateSchema.findById({ _id: candID }, (err, data) => {
     if (err) {
       return res.status(400).send(err);
     } else {
-      return res.status(200).send("candidate registred");
+      electionSchema.findOneAndUpdate({ _id: eleID }, {
+        "$push": {
+          nominatedCandidates: {
+            candidateID: candID,
+            candName: data.candName,
+            candEmail: data.candEmail
+          }
+        }
+      }, (err) => {
+        if (err) {
+          return res.status(400).send(err);
+        } else {
+          return res.status(200).send("candidate registred");
+        }
+      })
     }
   })
-
 }
 
 // genises block 
@@ -221,14 +227,13 @@ const signupAdmin = (req, res) => {
 // admin login
 const loginAdmin = (req, res) => {
   const { username, password } = req.body;
-  const role = "admin";
   adminSchema.findOne(
     { username: username, password: password },
     (err, data) => {
       if (err) {
         return res.status(400).send(err);
       } else {
-        return res.status(200).json({ token: getToken(data._id, role) });
+        return res.status(200).json({ token: getToken(data._id, "admin") });
       }
     }
   );

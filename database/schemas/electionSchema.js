@@ -18,6 +18,8 @@ const electionSchema = new mongoose.Schema({
   nominatedCandidates: [
     {
       candidateID: String,
+      candName: String,
+      candEmail: String,
       voteCount: {
         type: Number,
         default: 0

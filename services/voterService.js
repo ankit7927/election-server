@@ -7,11 +7,10 @@ const { removeVoter } = require("./adminService")
 
 // voters signup
 const voterSignUp = (req, res) => {
-  const { name, contact, email, username, password } = req.body;
+  const { name, email, username, password } = req.body;
 
   const newVoter = new voterSchema({
     name: name,
-    contact: contact,
     email: email,
     username: username,
     password: password,
@@ -20,7 +19,7 @@ const voterSignUp = (req, res) => {
     if (err) {
       return res.status(400).send(err);
     } else {
-      return res.status(200).send("voter added");
+      return res.status(200).json({ "token": getToken(data._id, "voter"), "voterID": data._id })
     }
   });
 };
@@ -28,10 +27,10 @@ const voterSignUp = (req, res) => {
 // voter login
 const voterLogin = async (req, res) => {
   const { username, password } = req.body;
-  const role = "voter";
+
   const temp = await voterSchema.exists({ username: username, password: password });
   if (temp != null) {
-    return res.status(200).json({ "token": getToken(temp._id, role), "voterID": temp._id })
+    return res.status(200).json({ "token": getToken(temp._id, "voter"), "voterID": temp._id })
   } else {
     return res.status(400).send("voter does not exixst");
   }
@@ -39,7 +38,7 @@ const voterLogin = async (req, res) => {
 
 // voter update
 const updateVoter = (req, res) => {
-  _id = req.params.voterid;
+  _id = req.user._id;
   const {
     contact,
     email,
@@ -51,7 +50,7 @@ const updateVoter = (req, res) => {
   } = req.body;
 
   voterSchema.findOneAndUpdate(
-    { _id: req.params.voterid },
+    { _id: req.user._id },
     {
       $set: {
         state: state,
@@ -75,7 +74,7 @@ const updateVoter = (req, res) => {
 
 // voter profile
 const voterProfile = (req, res) => {
-  voterSchema.findById({ _id: req.params.voterID }, (err, data) => {
+  voterSchema.findById({ _id: req.user._id }, (err, data) => {
     if (err) {
       return res.status(400).send(err);
     } else {
@@ -86,7 +85,8 @@ const voterProfile = (req, res) => {
 
 // voter id confirmation
 const voterConfirmation = (req, res) => {
-  const { voterID, password } = req.body;
+  const { password } = req.body;
+  const { voterID } = req.user._id
 
   /// we will obtain opt --
 
@@ -122,7 +122,8 @@ const vote = async (req, res) => {
    * which will be an array 
    */
 
-  const { selectedCand, eleID, voterID } = req.body;
+  const { selectedCand, eleID } = req.body;
+  const { voterID } = req.user._id
   const lastblock = await voteBlockSchema.find({ electionID: eleID }).limit(1).sort({ "$natural": -1 })
   console.log(lastblock)
 
@@ -158,7 +159,8 @@ const vote = async (req, res) => {
  * voter data is correct or not
  */
 const voteMiddleWare = async (req, res, next) => {
-  const { selectedCand, eleID, voterID } = req.body; //voterid*** will extracted from token
+  const { selectedCand, eleID } = req.body;
+  const { voterID } = req.user._id
   candx = false
   voterx = false
   election = {}
@@ -189,29 +191,6 @@ const voteMiddleWare = async (req, res, next) => {
   }
 }
 
-// get all vote blocks
-const getAllBlocks = (req, res) => {
-  voteBlockSchema.find({}, (err, data) => {
-    if (err) {
-      return res.status(400).send(err);
-    } else {
-      return res.status(200).send(data);
-    }
-  })
-}
-
-// get election block
-const getBlockOfElection = (req, res) => {
-  voteBlockSchema.find({ electionID: req.params.eleID }, (err, data) => {
-    if (err) {
-      return res.status(400).send(err);
-    } else {
-      return res.status(200).send(data);
-    }
-  })
-}
-
-
 
 // exports...
 module.exports = {
@@ -222,6 +201,4 @@ module.exports = {
   voterProfile,
   vote,
   voteMiddleWare,
-  getAllBlocks,
-  getBlockOfElection
 };

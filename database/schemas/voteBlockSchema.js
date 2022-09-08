@@ -10,6 +10,8 @@ const voteBlockSchema = new mongoose.Schema({
     votes: [
         {
             candidateID: String,
+            candName: String,
+            candEmail: String,
             voteCount: Number,
             _id: false
         }

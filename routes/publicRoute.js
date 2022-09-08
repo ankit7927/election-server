@@ -6,6 +6,8 @@ const {
   getAllCandidateOfElection,
   getOnGoingElection,
   getElectionByID,
+  getBlockOfElection,
+  getAllBlocks,
 } = require("../services/electionService");
 
 const { getImages } = require("../services/adminService");
@@ -29,5 +31,14 @@ router.get("/all-election", (req, res) => {
 router.get("/get-images/:imageName", (req, res) => {
   getImages(req, res);
 });
+
+router.get("/get-blocks", (req, res) => {
+  getAllBlocks(req, res);
+});
+
+router.get("/get-blocks/:eleID", (req, res) => {
+  getBlockOfElection(req, res);
+});
+
 
 module.exports = router;
