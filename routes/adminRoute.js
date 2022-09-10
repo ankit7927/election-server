@@ -29,54 +29,54 @@ const {
 const imageHandle = require("../extras/media");
 
 // election
-router.post("/new-election", adminAuth, imageHandle.single("eleImage"), (req, res) => {
+router.post("/new-election", imageHandle.single("eleImage"), (req, res) => {
   createNewElection(req, res);
 });
 
-router.delete("/dele-election/:eleID", adminAuth, (req, res) => {
+router.delete("/dele-election/:eleID", (req, res) => {
   deteletElection(req, res);
 });
 
-router.get("/all-election", adminAuth, (req, res) => {
+router.get("/all-election", (req, res) => {
   getAllElection(req, res);
 });
 
-router.get("/current-ele", adminAuth, (req, res) => {
+router.get("/current-ele", (req, res) => {
   getOnGoingElection(req, res);
 });
 
 // candidates
-router.post("/new-cand", adminAuth, (req, res) => {
+router.post("/new-cand", (req, res) => {
   createCandidate(req, res);
 });
 
-router.get("/all-cand/:electionID", adminAuth, (req, res) => {
+router.get("/all-cand/:electionID", (req, res) => {
   getAllCandidateOfElection(req, res);
 });
 
-router.get("/all-cand", adminAuth, (req, res) => {
+router.get("/all-cand", (req, res) => {
   getAllCandidate(req, res)
 })
 
-router.post("/reg-cand", adminAuth, (req, res) => {
+router.post("/reg-cand", (req, res) => {
   registerCandidate(req, res)
 })
 
 // block
-router.get("/gen-genblock/:eleID", adminAuth, (req, res) => {
+router.get("/gen-genblock/:eleID", (req, res) => {
   genisesBlock(req, res)
 })
 
-router.get("/get-blocks", adminAuth, (req, res) => {
+router.get("/get-blocks", (req, res) => {
   getAllBlocks(req, res);
 });
 
 // voters
-router.get("/all-voter", adminAuth, (req, res) => {
+router.get("/all-voter", (req, res) => {
   getAllVoters(req, res);
 });
 
-router.get("/reg-voter/:eleID", adminAuth, (req, res) => {
+router.get("/reg-voter/:eleID", (req, res) => {
   registerVoter(req, res);
 });
 
@@ -90,7 +90,7 @@ router.post("/admin-login", (req, res) => {
 });
 
 // others
-router.post("/add-images", adminAuth, imageHandle.single("ad-image"), (req, res) => {
+router.post("/add-images", imageHandle.single("ad-image"), (req, res) => {
   addImages(req, res);
 });
 

@@ -3,7 +3,7 @@ const voteBlockSchema = require("../database/schemas/voteBlockSchema");
 const getToken = require("../authentication/JWTOperations");
 const electionSchema = require("../database/schemas/electionSchema");
 const { removeVoter } = require("./adminService")
-
+const generatHash = require("../extras/block")
 
 // voters signup
 const voterSignUp = (req, res) => {
@@ -86,11 +86,10 @@ const voterProfile = (req, res) => {
 // voter id confirmation
 const voterConfirmation = (req, res) => {
   const { password } = req.body;
-  const { voterID } = req.user._id
-
+  const voterID = req.user._id
   /// we will obtain opt --
 
-  voterSchema.exists({ _id: voterID, password: password }, (err, data) => {
+  voterSchema.findOne({ _id: voterID, password: password }, (err, data) => {
     if (data != null) {
       return res.status(200).json({ "info": "voter confirmed" })
     } else {
@@ -123,19 +122,19 @@ const vote = async (req, res) => {
    */
 
   const { selectedCand, eleID } = req.body;
-  const { voterID } = req.user._id
+  const voterID = req.user._id
   const lastblock = await voteBlockSchema.find({ electionID: eleID }).limit(1).sort({ "$natural": -1 })
-  console.log(lastblock)
 
   lastblock[0].votes.map((vote) => {
     if (vote.candidateID == selectedCand) {
       vote.voteCount = vote.voteCount + 1
     }
   })
+  dateTime = new Date().toLocaleDateString();
   const newBlock = new voteBlockSchema({
-    blockHash: "this is first block hash ",
-    previousHash: "hash genises block",
-    timeStamp: "2020-02-02",
+    blockHash: generatHash({ eleID: eleID, dateTime: dateTime, votes: lastblock[0].votes }),
+    previousHash: lastblock[0].blockHash,
+    timeStamp: dateTime,
     electionID: eleID,
     votes: lastblock[0].votes
   })
@@ -160,7 +159,7 @@ const vote = async (req, res) => {
  */
 const voteMiddleWare = async (req, res, next) => {
   const { selectedCand, eleID } = req.body;
-  const { voterID } = req.user._id
+  const voterID = req.user._id
   candx = false
   voterx = false
   election = {}
@@ -174,12 +173,12 @@ const voteMiddleWare = async (req, res, next) => {
   }
 
   election.nominatedCandidates.map((cand) => {
-    if (cand.candidateID == selectedCand) {
+    if (cand.candidateID === selectedCand) {
       candx = true
     }
   })
   election.registredVoters.map((voter) => {
-    if (voter == voterID) {
+    if (voter === voterID) {
       voterx = true
     }
   })
@@ -187,7 +186,7 @@ const voteMiddleWare = async (req, res, next) => {
   if (candx && voterx) {
     next()
   } else {
-    return res.status(400).json({ "error": "voter or candidate not found" });
+    return res.status(400).json({ "error": "voter or candidate not found \n voter may voted or not listed" });
   }
 }
 

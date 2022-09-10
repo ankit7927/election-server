@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-//const voteModel = require("./voteModel")
 
 const voteBlockSchema = new mongoose.Schema({
     blockHash: String,
@@ -18,4 +17,4 @@ const voteBlockSchema = new mongoose.Schema({
     ],
 })
 
-module.exports = mongoose.model("voteBlockDB", voteBlockSchema);
+module.exports = mongoose.model("Blocks", voteBlockSchema);

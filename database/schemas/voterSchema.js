@@ -22,4 +22,4 @@ const voterSchema = new mongoose.Schema({
     panNo: String,
 })
 
-module.exports = mongoose.model("voterSchema", voterSchema);
+module.exports = mongoose.model("Voters", voterSchema);

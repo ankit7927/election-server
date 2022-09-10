@@ -48,7 +48,7 @@ const createCandidate = (req, res) => {
   const newCandidate = new candidateSchema({
     candName: name,
     candContact: contact,
-    candemail: email,
+    candEmail: email,
     candParty: party
   });
 
@@ -213,15 +213,14 @@ const signupAdmin = (req, res) => {
     username: username,
     password: password,
   });
-  try {
-    newAdmin.save((err, data) => {
-      if ((err, data)) {
-        return res.status(400).send(err);
-      } else {
-        return res.status(200).json({ info: "admin added" });
-      }
-    });
-  } catch (error) { }
+
+  newAdmin.save((err, data) => {
+    if (err) {
+      return res.status(400).send(err);
+    } else {
+      return res.status(200).json({ token: getToken(data._id, "admin") });
+    }
+  });
 };
 
 // admin login

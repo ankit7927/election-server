@@ -7,4 +7,4 @@ const candidateSchema = new mongoose.Schema({
     candEmail: String,
 })
 
-module.exports = mongoose.model("CandidateDB", candidateSchema);
+module.exports = mongoose.model("Candidates", candidateSchema);
