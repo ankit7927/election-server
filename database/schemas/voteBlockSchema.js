@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { candidateSchema } = require("./candidateSchema")
 const voteBlockSchema = new mongoose.Schema({
     blockHash: String,
     previousHash: String,
@@ -8,10 +8,11 @@ const voteBlockSchema = new mongoose.Schema({
     electionID: String,
     votes: [
         {
-            candidateID: String,
-            candName: String,
-            candEmail: String,
-            voteCount: Number,
+            candidate: candidateSchema,
+            voteCount: {
+                type: Number,
+                default: 0
+            },
             _id: false
         }
     ],

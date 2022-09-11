@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 
 
-const candidateSchema = new mongoose.Schema({
+var candidateSchema = new mongoose.Schema({
     candName: String,
     candContact: Number,
     candEmail: String,
 })
 
-module.exports = mongoose.model("Candidates", candidateSchema);
+const candidateModel = mongoose.model("Candidates", candidateSchema);
+
+module.exports = {
+    candidateModel,
+    candidateSchema,
+}

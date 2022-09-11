@@ -126,7 +126,7 @@ const vote = async (req, res) => {
   const lastblock = await voteBlockSchema.find({ electionID: eleID }).limit(1).sort({ "$natural": -1 })
 
   lastblock[0].votes.map((vote) => {
-    if (vote.candidateID == selectedCand) {
+    if (vote.candidate._id == selectedCand) {
       vote.voteCount = vote.voteCount + 1
     }
   })
@@ -163,6 +163,8 @@ const voteMiddleWare = async (req, res, next) => {
   candx = false
   voterx = false
   election = {}
+
+
   try {
     election = await electionSchema.findById(
       { _id: eleID },
@@ -173,7 +175,7 @@ const voteMiddleWare = async (req, res, next) => {
   }
 
   election.nominatedCandidates.map((cand) => {
-    if (cand.candidateID === selectedCand) {
+    if (cand.candidate._id == selectedCand) {
       candx = true
     }
   })

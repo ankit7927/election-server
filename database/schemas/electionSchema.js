@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { candidateSchema } = require("./candidateSchema")
 
 const electionSchema = new mongoose.Schema({
   electionName: {
@@ -17,9 +18,7 @@ const electionSchema = new mongoose.Schema({
   },
   nominatedCandidates: [
     {
-      candidateID: String,
-      candName: String,
-      candEmail: String,
+      candidate: candidateSchema,
       voteCount: {
         type: Number,
         default: 0

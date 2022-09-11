@@ -1,5 +1,5 @@
 const electionSchema = require("../database/schemas/electionSchema");
-const candidateSchema = require("../database/schemas/candidateSchema");
+const { candidateModel } = require("../database/schemas/candidateSchema");
 const voterSchema = require("../database/schemas/voterSchema");
 const voteBlockSchema = require("../database/schemas/voteBlockSchema");
 const adminSchema = require("../database/schemas/adminSchema");
@@ -45,7 +45,7 @@ const deteletElection = (req, res) => {
 const createCandidate = (req, res) => {
   const { name, contact, email, party } = req.body;
 
-  const newCandidate = new candidateSchema({
+  const newCandidate = new candidateModel({
     candName: name,
     candContact: contact,
     candEmail: email,
@@ -64,7 +64,7 @@ const createCandidate = (req, res) => {
 
 // get all candidate
 const getAllCandidate = (req, res) => {
-  candidateSchema.find({}, (err, data) => {
+  candidateModel.find({}, (err, data) => {
     if (err) {
       return res.status(400).send(err);
     } else {
@@ -77,16 +77,14 @@ const getAllCandidate = (req, res) => {
 const registerCandidate = (req, res) => {
   const { candID, eleID } = req.body
 
-  candidateSchema.findById({ _id: candID }, (err, data) => {
+  candidateModel.findById({ _id: candID }, (err, data) => {
     if (err) {
       return res.status(400).send(err);
     } else {
       electionSchema.findOneAndUpdate({ _id: eleID }, {
         "$push": {
           nominatedCandidates: {
-            candidateID: candID,
-            candName: data.candName,
-            candEmail: data.candEmail
+            candidate: data
           }
         }
       }, (err) => {
