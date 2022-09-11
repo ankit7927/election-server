@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 const { candidateSchema } = require("./candidateSchema")
 
+const electionCrateria = new mongoose.Schema({
+
+})
+
+
+
 const electionSchema = new mongoose.Schema({
   electionName: {
     type: String,
