@@ -28,7 +28,7 @@ const voterSignUp = (req, res) => {
 const voterLogin = async (req, res) => {
   const { username, password } = req.body;
 
-  const temp = await voterSchema.exists({ username: username, password: password });
+  const temp = await voterSchema.findOne({ username: username, password: password });
   if (temp != null) {
     return res.status(200).json({ "token": getToken(temp._id, "voter"), "voterID": temp._id })
   } else {

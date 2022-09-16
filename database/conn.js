@@ -7,7 +7,7 @@ const localDB = "mongodb://localhost:27017/electionDB";
 mongoose.connect(localDB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: trues
+  useCreateIndex: true     //for mongoose v5.*,,, remove in using latest version of mongoose
 }).then(() => {
   console.log("connected to database ✔️")
 }).catch((err) => console.log("can't connect to database ❌" + "\n" + err))
