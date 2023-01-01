@@ -17,6 +17,7 @@ const getOnGoingElection = (req, res) => {
     if (err) {
       return res.status(500).send(err);
     } else {
+      console.log(data)
       temparray = [];
       const currentDate = new Date();
       data.forEach((element) => {

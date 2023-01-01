@@ -54,7 +54,7 @@ const updateVoter = (req, res) => {
     {
       $set: {
         state: state,
-        birthDate: birthDate,
+        birthDate: new Date(birthDate).toLocaleDateString(),
         contact: contact,
         email: email,
         address: address,

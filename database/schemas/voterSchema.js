@@ -15,7 +15,7 @@ const voterSchema = new mongoose.Schema({
     },
     profileImage: String,
     // id details
-    birthDate: Date,
+    birthDate: String,
     address: String,
     state: String,
     adharNo: Number,

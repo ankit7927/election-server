@@ -29,7 +29,7 @@ const {
 const imageHandle = require("../extras/media");
 
 // election
-router.post("/new-election", imageHandle.single("eleImage"), (req, res) => {
+router.post("/new-election", (req, res) => {
   createNewElection(req, res);
 });
 

@@ -17,7 +17,6 @@ const createNewElection = (req, res) => {
     votingStart: voteStart,
     votingEnd: voteEnd,
     "craiteria.state": state,
-    image: req.file.destination + "/" + req.file.originalname,
   });
   newElection.save((err) => {
     if (err) {

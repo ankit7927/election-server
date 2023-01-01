@@ -16,8 +16,6 @@ const electionSchema = new mongoose.Schema({
   // important dates
   votingStart: Date,
   votingEnd: Date,
-  // tumbnail image
-  image: String,
   //craiteria of voting
   craiteria: {
     state: String,
